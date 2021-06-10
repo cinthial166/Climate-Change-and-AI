@@ -7,7 +7,7 @@
 
 #remove columns with only NA
  bad.vars<-sapply(data, function(x) {mean(ifelse(is.na(x)==TRUE,1,0))})
- bad.vars<-names(bad.vars[bad.vars>0.50])
+ bad.vars<-names(bad.vars[bad.vars>0.03])
  bad.vars<-c(bad.vars,"SE.ENR.PRSC.FM.ZS","SE.PRM.CMPT.ZS","SE.SEC.ENRR","SH.DYN.AIDS.ZS","TT.PRI.MRCH.XD.WD","TX.VAL.TECH.MF.ZS")
 
 #let's select a response of interest
@@ -19,6 +19,11 @@
 
 #estimate full model
  data.model<-data[,c(response,predictors)]
+#clean the data database
+ data.model<-data.model[complete.cases(data.model),]
+
+
+
  model<-as.formula(paste0(response,"~",paste(predictors,collapse="+")))
  full.model <- lm(model, data = data.model)
  summary(full.model)
@@ -58,9 +63,9 @@
 #now how do we select which model is best
 
 predict.regsubsets <-function (object, model ,newdata ,id ){
-  #object<-regfit.best
-  #newdata<-data.model[test ,]
-  #id<-1
+#  object<-regfit.best
+#  newdata<-data.model[test ,]
+#  id<-4
   form<-model
   options(na.action='na.pass')
   mat<-model.matrix (form,newdata )
